@@ -45,6 +45,7 @@ public class Enemy : MonoBehaviour
                 EnemyPoolManager.instance.AddNewEnemyToIdlePool(this.gameObject);
                 EnemyPoolManager.instance.RemoveEnemyFromPool(this.gameObject);
                
+               
                 this.gameObject.SetActive(false);
                
             }
@@ -56,8 +57,17 @@ public class Enemy : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("EnemyDestroyer"))
         {
-            GameManager.instance.ReduceHealth();
-            SoundManager.instance.PlayWithEnemyDestroyerSource(SoundManager.instance.zap);
+            if(GameManager.instance!=null)
+            {
+                GameManager.instance.ReduceHealth();
+            }
+
+            if(SoundManager.instance!=null)
+            {
+
+                SoundManager.instance.PlayWithEnemyDestroyerSource(SoundManager.instance.zap);
+            }
+           
             EnemyPoolManager.instance.AddNewEnemyToIdlePool(this.gameObject);
             EnemyPoolManager.instance.RemoveEnemyFromPool(this.gameObject);
             ParticleEffect.instance.SpawnExplosion(transform.position, colorType);

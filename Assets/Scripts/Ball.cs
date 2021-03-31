@@ -80,10 +80,12 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        if (isSelected)
+        if (!GameManager.instance.isGameOver)
         {
-            Drag();
+            if (isSelected)
+            {
+                Drag();
+            }
         }
 
      
