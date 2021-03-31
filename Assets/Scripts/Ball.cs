@@ -18,7 +18,7 @@ public class Ball : MonoBehaviour
     private float speed;
 
     [SerializeField]
-    private float maxDragDistance;  
+    private float maxDragDistance;
 
     [SerializeField]
     private float releaseDelay;
@@ -37,7 +37,9 @@ public class Ball : MonoBehaviour
 
     [SerializeField]
     private Gradient rainBowColor;
-    
+    [SerializeField]
+    private Gradient basicGradientColor;
+
 
 
     void Start()
@@ -49,12 +51,12 @@ public class Ball : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         trailRenderer = GetComponent<TrailRenderer>();
 
-       
+
 
         rb = GetComponent<Rigidbody2D>();
         sj = GetComponent<SpringJoint2D>();
         sj.connectedAnchor = parentSlingShot.hook.localPosition;
-       
+
         sj.connectedBody = parentObject.GetComponent<Rigidbody2D>();
         hookRb = sj.connectedBody;
 
@@ -65,7 +67,7 @@ public class Ball : MonoBehaviour
         PowerUpManager.instance.OnRainbowBallDeactive += TurnOffRainbowBall;
 
 
-        if(PowerUpManager.instance.isRainbowBallActive)
+        if (PowerUpManager.instance.isRainbowBallActive)
         {
             TurnOnRainbowBall();
             colorType = ColorType.Rainbow;
@@ -76,7 +78,7 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-      
+
         if (isSelected)
         {
             Drag();
@@ -89,7 +91,7 @@ public class Ball : MonoBehaviour
 
         float distance = Vector2.Distance(mousePosition, hookRb.position);
 
-        if(distance>maxDragDistance)
+        if (distance > maxDragDistance)
         {
             Vector2 direction = (mousePosition - hookRb.position).normalized;
             rb.position = hookRb.position + direction * maxDragDistance;
@@ -99,8 +101,8 @@ public class Ball : MonoBehaviour
             rb.position = mousePosition;
         }
 
-       
-       
+
+
     }
 
     private void OnMouseDown()
@@ -113,30 +115,32 @@ public class Ball : MonoBehaviour
     {
         isSelected = false;
         rb.isKinematic = false;
-      
-       
+
+
         Release();
     }
 
     public void Release()
     {
-        StartCoroutine(ReleaseRoutine());
+        Debug.Log(Vector2.Distance(sj.connectedBody.position, rb.position));
+        if (Vector2.Distance(sj.connectedBody.position, rb.position) > 0.7f)
+        {
+            StartCoroutine(ReleaseRoutine());
+        }
     }
 
     IEnumerator ReleaseRoutine()
     {
-        yield return new WaitForSeconds(releaseDelay);
-        Vector2 distance = sj.connectedBody.position - rb.position;
 
-       
+        SoundManager.instance.PlayWithBallSource(colorType);
+        circleCollider2D.radius = 0.5f;
+        yield return new WaitForSeconds(releaseDelay);
         sj.enabled = false;
         circleCollider2D.isTrigger = false;
         rb.velocity = rb.velocity * speed;
-
-
-
-
         parentSlingShot.SpawnNewBall();
+
+
     }
 
     public void TurnOnRainbowBall()
@@ -149,7 +153,7 @@ public class Ball : MonoBehaviour
         }
         colorType = ColorType.Rainbow;
 
-        if(trailRenderer!=null)
+        if (trailRenderer != null)
         {
             trailRenderer.colorGradient = rainBowColor;
 
@@ -159,27 +163,34 @@ public class Ball : MonoBehaviour
 
     public void TurnOffRainbowBall()
     {
-        if(spriteRenderer!=null)
+        if (spriteRenderer != null)
         {
             spriteRenderer.sprite = PowerUpManager.instance.defaultBallSprite;
             spriteRenderer.color = ColorPicker.instance.GetColorRGBValue(initialColorType);
-           
+
         }
         colorType = initialColorType;
         if (trailRenderer != null)
         {
             trailRenderer.endColor = ColorPicker.instance.GetColorRGBValue(initialColorType);
             trailRenderer.startColor = ColorPicker.instance.GetColorRGBValue(initialColorType);
+            trailRenderer.colorGradient = basicGradientColor;
         }
+    }
+
+    private void OnDisable()
+    {
+        PowerUpManager.instance.OnRainbowBallActive -= TurnOnRainbowBall;
+        PowerUpManager.instance.OnRainbowBallDeactive -= TurnOffRainbowBall;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-         if (collision.gameObject.CompareTag("EnemyDestroyer"))
+        if (collision.gameObject.CompareTag("EnemyDestroyer"))
         {
-           
+
             Destroy(this.gameObject);
         }
-      
+
     }
 }

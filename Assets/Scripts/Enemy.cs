@@ -56,6 +56,7 @@ public class Enemy : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("EnemyDestroyer"))
         {
+            GameManager.instance.ReduceHealth();
             EnemyPoolManager.instance.AddNewEnemyToIdlePool(this.gameObject);
             EnemyPoolManager.instance.RemoveEnemyFromPool(this.gameObject);
             ParticleEffect.instance.SpawnExplosion(transform.position, colorType);

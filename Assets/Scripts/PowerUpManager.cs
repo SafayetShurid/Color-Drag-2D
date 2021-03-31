@@ -43,7 +43,7 @@ public class PowerUpManager : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSeconds(Random.Range(5, 10));
+            yield return new WaitForSeconds(Random.Range(15,20));
             Instantiate(powerUps[0], powerUpSpawnPoints[Random.Range(0,powerUpSpawnPoints.Length)].position, Quaternion.identity);
         }
        

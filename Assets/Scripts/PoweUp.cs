@@ -32,7 +32,16 @@ public class PoweUp : MonoBehaviour
         if(collision.gameObject.CompareTag("Ball"))
         {
             PowerUpManager.instance.RainbowBallActive();
+            SoundManager.instance.PlayWithPowerUpSource(SoundManager.instance.rainbowClip);
+            Destroy(this.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("EnemyDestroyer"))
+        {            
+            SoundManager.instance.PlayWithPowerUpSource(SoundManager.instance.rainbowClip);
             Destroy(this.gameObject);
         }
     }
+
+   
 }
