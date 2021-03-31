@@ -33,13 +33,13 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.GetComponent<Ball>()!=null)
+        if(collision.gameObject.CompareTag("Ball"))
         {
             Ball ball = collision.gameObject.GetComponent<Ball>();
             if(ball.colorType.Equals(this.colorType) || ball.colorType.Equals(ColorType.Rainbow))
             {
                 ParticleEffect.instance.SpawnExplosion(transform.position, colorType);
-                //GameManager.instance.ScoreUp();
+                GameManager.instance.ScoreUp();
                 //GameManager.instance.IncreaseCash(cashReward);
                 this.gameObject.transform.position = SpawnManager.instance.spawnPoints[Random.Range(0,2)].position;
                 EnemyPoolManager.instance.AddNewEnemyToIdlePool(this.gameObject);
@@ -57,6 +57,7 @@ public class Enemy : MonoBehaviour
         if(collision.gameObject.CompareTag("EnemyDestroyer"))
         {
             GameManager.instance.ReduceHealth();
+            SoundManager.instance.PlayWithEnemyDestroyerSource(SoundManager.instance.zap);
             EnemyPoolManager.instance.AddNewEnemyToIdlePool(this.gameObject);
             EnemyPoolManager.instance.RemoveEnemyFromPool(this.gameObject);
             ParticleEffect.instance.SpawnExplosion(transform.position, colorType);

@@ -8,9 +8,11 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     public AudioClip rainbowClip;
+    public AudioClip zap;
     public AudioClip[] ballShootClips;
     public AudioSource powerUpSource;
     public AudioSource ballSource;
+    public AudioSource enmeyDestroyerAudioSource;
 
     private ColorType previousBallColorType;
     private int ballSoundChangeCounter;
@@ -31,14 +33,16 @@ public class SoundManager : MonoBehaviour
         
     }
 
-    public void PlayPowerUpSource(AudioClip audioClip)
+    public void PlayWithEnemyDestroyerSource(AudioClip audioClip)
     {
-
+        enmeyDestroyerAudioSource.PlayOneShot(audioClip);
+        Debug.Log("Sound");
     }
 
     public void PlayWithPowerUpSource(AudioClip audioClip)
     {
         powerUpSource.PlayOneShot(audioClip);
+
     }
 
     public void PlayWithBallSource(ColorType colorType)

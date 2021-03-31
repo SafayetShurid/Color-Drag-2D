@@ -40,6 +40,8 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private Gradient basicGradientColor;
 
+    private GameObject[] points = new GameObject[5];
+    
 
 
     void Start()
@@ -83,6 +85,8 @@ public class Ball : MonoBehaviour
         {
             Drag();
         }
+
+     
     }
 
     private void Drag()
@@ -101,8 +105,9 @@ public class Ball : MonoBehaviour
             rb.position = mousePosition;
         }
 
+        Debug.Log(rb.velocity);
 
-
+        
     }
 
     private void OnMouseDown()
@@ -122,8 +127,7 @@ public class Ball : MonoBehaviour
 
     public void Release()
     {
-        Debug.Log(Vector2.Distance(sj.connectedBody.position, rb.position));
-        if (Vector2.Distance(sj.connectedBody.position, rb.position) > 0.7f)
+        if (Vector2.Distance(sj.connectedBody.position, rb.position) > 0.65f)
         {
             StartCoroutine(ReleaseRoutine());
         }
@@ -134,10 +138,14 @@ public class Ball : MonoBehaviour
 
         SoundManager.instance.PlayWithBallSource(colorType);
         circleCollider2D.radius = 0.5f;
+       
         yield return new WaitForSeconds(releaseDelay);
-        sj.enabled = false;
-        circleCollider2D.isTrigger = false;
         rb.velocity = rb.velocity * speed;
+        sj.enabled = false;
+       
+        circleCollider2D.isTrigger = false;
+       
+        
         parentSlingShot.SpawnNewBall();
 
 
